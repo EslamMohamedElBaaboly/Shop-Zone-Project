@@ -1,0 +1,180 @@
+<div class="page-wrapper fade-in">
+
+  <!-- Header -->
+  <div class="pl-header">
+    <div>
+      <h1 class="page-title mb-1">Our <em>Products</em></h1>
+      @if (!loading && !errorMsg) {
+        <p class="pl-subtitle">
+          Showing <strong>{{ filteredProducts.length }}</strong> of
+          <strong>{{ allProducts.length }}</strong> products
+        </p>
+      }
+    </div>
+  </div>
+
+  <!-- ══ ERROR STATE ══ -->
+  @if (errorMsg) {
+    <div class="server-error">
+      <div class="server-error__icon"><i class="bi bi-wifi-off"></i></div>
+      <div class="server-error__body">
+        <h4>JSON Server not reachable</h4>
+        <p>Make sure you started the backend first:</p>
+        <code>npm run server</code>
+        <span>then reload</span>
+        <code>npm start</code>
+      </div>
+      <button class="server-error__btn" (click)="retry()">
+        <i class="bi bi-arrow-clockwise"></i> Retry
+      </button>
+    </div>
+  }
+
+  <!-- Filters Bar -->
+  @if (!errorMsg) {
+    <div class="filters-bar">
+
+      <div class="filter-search">
+        <i class="bi bi-search filter-search__icon"></i>
+        <input
+          type="text"
+          class="filter-search__input"
+          placeholder="Search products…"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange()">
+        @if (searchTerm) {
+          <button class="filter-search__clear" (click)="searchTerm=''; onSearchChange()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        }
+      </div>
+
+      <div class="filter-cats">
+        @for (cat of categories; track cat) {
+          <button
+            class="cat-pill"
+            [class.cat-pill--active]="selectedCategory === cat"
+            (click)="selectedCategory = cat; onCategoryChange()">
+            {{ cat }}
+          </button>
+        }
+      </div>
+
+      <div class="filter-sort">
+        <i class="bi bi-sort-down-alt"></i>
+        <select [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+          <option value="default">Default</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="rating">Top Rated</option>
+        </select>
+      </div>
+
+      @if (isFiltered) {
+        <button class="filter-clear" (click)="clearFilters()">
+          <i class="bi bi-x-circle"></i> Clear
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Loading Skeletons -->
+  @if (loading) {
+    <div class="products-grid">
+      @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="product-card skeleton-card">
+          <div class="skeleton skeleton-img"></div>
+          <div class="skeleton-body">
+            <div class="skeleton skeleton-tag"></div>
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-title" style="width:60%"></div>
+            <div class="skeleton skeleton-price"></div>
+            <div class="skeleton skeleton-btn"></div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Products Grid -->
+  @if (!loading && !errorMsg && filteredProducts.length > 0) {
+    <div class="products-grid">
+      @for (product of filteredProducts; track product.id) {
+
+        <div class="product-card" [class.product-card--added]="isAdded(product.id)">
+
+          <a [routerLink]="['/products', product.id]" class="product-card__img-wrap">
+            <img [src]="product.image" [alt]="product.name" class="product-card__img">
+            <div class="product-card__overlay"></div>
+            @if (product.stock === 0) {
+              <span class="product-card__oos-overlay">Out of Stock</span>
+            }
+            @if (product.stock > 0 && product.stock <= 5) {
+              <span class="product-card__low-stock">Only {{ product.stock }} left!</span>
+            }
+          </a>
+
+          <div class="product-card__body">
+            <span class="product-card__cat">{{ product.category }}</span>
+            <a [routerLink]="['/products', product.id]" class="product-card__name">
+              {{ product.name }}
+            </a>
+            <div class="product-card__stars">
+              @for (star of getStarArray(product.rating); track $index) {
+                @if (star === 'full')  { <i class="bi bi-star-fill"></i> }
+                @if (star === 'half')  { <i class="bi bi-star-half"></i> }
+                @if (star === 'empty') { <i class="bi bi-star"></i>      }
+              }
+              <span class="product-card__rating-val">{{ product.rating }}</span>
+            </div>
+            <div class="product-card__price">
+              {{ product.price | number }}<span> EGP</span>
+            </div>
+          </div>
+
+          <div class="product-card__footer">
+            @if (product.stock === 0) {
+              <button class="pc-btn pc-btn--disabled" disabled>
+                <i class="bi bi-x-circle"></i> Out of Stock
+              </button>
+            } @else if (isAdded(product.id)) {
+              <button class="pc-btn pc-btn--added" disabled>
+                <i class="bi bi-check-lg"></i> Added!
+              </button>
+            } @else {
+              <button
+                class="pc-btn pc-btn--primary"
+                [class.pc-btn--loading]="isAdding(product.id)"
+                [disabled]="isAdding(product.id)"
+                (click)="addToCart(product)">
+                @if (isAdding(product.id)) {
+                  <span class="btn-spinner"></span>
+                } @else {
+                  <i class="bi bi-bag-plus"></i>
+                }
+                Add to Cart
+              </button>
+            }
+            <a [routerLink]="['/products', product.id]" class="pc-btn pc-btn--ghost">
+              <i class="bi bi-eye"></i>
+            </a>
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Empty Filter Result -->
+  @if (!loading && !errorMsg && filteredProducts.length === 0 && allProducts.length > 0) {
+    <div class="empty-state">
+      <i class="bi bi-search"></i>
+      <h5>No products found</h5>
+      <p>Try a different search or category.</p>
+      <button class="btn-primary mt-2" (click)="clearFilters()">
+        <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
+      </button>
+    </div>
+  }
+
+</div>

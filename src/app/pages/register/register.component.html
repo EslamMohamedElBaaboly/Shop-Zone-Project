@@ -1,0 +1,164 @@
+<div class="auth-wrapper">
+  <div class="auth-card animate__animated animate__fadeInUp">
+
+    <!-- ── Logo ──────────────────────────────────────────────── -->
+    <div class="auth-logo">
+      <div class="logo-icon">
+        <i class="bi bi-person-plus-fill"></i>
+      </div>
+      <h1>Shop<span>Zone</span></h1>
+      <p>Create your free account today.</p>
+    </div>
+
+    <!-- ── Error Alert ───────────────────────────────────────── -->
+    @if (errorMsg) {
+      <div class="auth-alert auth-alert--danger animate__animated animate__shakeX">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <span>{{ errorMsg }}</span>
+      </div>
+    }
+
+    <!-- ── Form ──────────────────────────────────────────────── -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+      <!-- Full Name -->
+      <div class="field-group">
+        <label class="field-label">
+          <i class="bi bi-person"></i> Full Name
+        </label>
+        <input
+          type="text"
+          class="field-input"
+          [class.field-input--error]="name.invalid && name.touched"
+          formControlName="name"
+          placeholder="Ahmed Mohamed"
+          autocomplete="name">
+        <div class="field-errors">
+          @if (name.touched && name.errors?.['required']) {
+            <span class="field-error">Full name is required.</span>
+          }
+          @if (name.touched && name.errors?.['minlength']) {
+            <span class="field-error">Name must be at least 3 characters.</span>
+          }
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="field-group">
+        <label class="field-label">
+          <i class="bi bi-envelope"></i> Email Address
+        </label>
+        <input
+          type="email"
+          class="field-input"
+          [class.field-input--error]="email.invalid && email.touched"
+          formControlName="email"
+          placeholder="you@example.com"
+          autocomplete="email">
+        <div class="field-errors">
+          @if (email.touched && email.errors?.['required']) {
+            <span class="field-error">Email is required.</span>
+          }
+          @if (email.touched && email.errors?.['email']) {
+            <span class="field-error">Enter a valid email address.</span>
+          }
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="field-group">
+        <label class="field-label">
+          <i class="bi bi-lock"></i> Password
+        </label>
+        <div class="field-input-wrap">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="field-input field-input--has-action"
+            [class.field-input--error]="password.invalid && password.touched"
+            formControlName="password"
+            placeholder="Min 8 characters"
+            autocomplete="new-password">
+          <button type="button" class="field-action" (click)="togglePassword()">
+            <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+          </button>
+        </div>
+
+        <!-- Password Strength Indicator -->
+        @if (password.value && password.dirty) {
+          <div class="strength-bar">
+            <div class="strength-track">
+              <div class="strength-fill"
+                   [class.strength-fill--weak]="passwordStrength === 'weak'"
+                   [class.strength-fill--medium]="passwordStrength === 'medium'"
+                   [class.strength-fill--strong]="passwordStrength === 'strong'">
+              </div>
+            </div>
+            <span class="strength-label"
+                  [class.strength-label--weak]="passwordStrength === 'weak'"
+                  [class.strength-label--medium]="passwordStrength === 'medium'"
+                  [class.strength-label--strong]="passwordStrength === 'strong'">
+              {{ passwordStrength | titlecase }}
+            </span>
+          </div>
+        }
+
+        <div class="field-errors">
+          @if (password.touched && password.errors?.['required']) {
+            <span class="field-error">Password is required.</span>
+          }
+          @if (password.touched && password.errors?.['minlength']) {
+            <span class="field-error">Password must be at least 8 characters.</span>
+          }
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="field-group">
+        <label class="field-label">
+          <i class="bi bi-shield-lock"></i> Confirm Password
+        </label>
+        <div class="field-input-wrap">
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            class="field-input field-input--has-action"
+            [class.field-input--error]="passwordsMismatch"
+            formControlName="confirmPassword"
+            placeholder="Repeat your password"
+            autocomplete="new-password">
+          <button type="button" class="field-action" (click)="toggleConfirmPassword()">
+            <i class="bi" [class.bi-eye]="!showConfirmPassword"
+                          [class.bi-eye-slash]="showConfirmPassword"></i>
+          </button>
+        </div>
+        <div class="field-errors">
+          @if (passwordsMismatch) {
+            <span class="field-error">Passwords do not match.</span>
+          }
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="auth-submit-btn"
+        [class.auth-submit-btn--loading]="loading"
+        [disabled]="form.invalid || loading">
+        @if (loading) {
+          <span class="spinner"></span>
+          <span>Creating account…</span>
+        } @else {
+          <i class="bi bi-person-check"></i>
+          <span>Create Account</span>
+        }
+      </button>
+
+    </form>
+
+    <!-- ── Footer link ───────────────────────────────────────── -->
+    <p class="auth-footer-link">
+      Already have an account?
+      <a routerLink="/login">Sign in</a>
+    </p>
+
+  </div>
+</div>

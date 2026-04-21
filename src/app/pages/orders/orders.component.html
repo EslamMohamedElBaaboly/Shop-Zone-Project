@@ -1,0 +1,129 @@
+<div class="page-wrapper fade-in">
+
+  
+  <div class="orders-header">
+    <h1 class="page-title mb-0">
+      <i class="bi bi-receipt-cutoff"></i> My <span>Orders</span>
+    </h1>
+    @if (orders.length > 0) {
+      <span class="orders-header__count">{{ orders.length }} order(s)</span>
+    }
+  </div>
+
+  @if (loading) {
+    <div class="orders-skeleton">
+      @for (i of [1,2,3]; track i) {
+        <div class="skeleton-order-card">
+          <div class="skeleton" style="width:80px;height:14px;border-radius:6px"></div>
+          <div class="skeleton" style="width:55%;height:22px;border-radius:8px;margin-top:.5rem"></div>
+          <div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap">
+            <div class="skeleton" style="width:100px;height:28px;border-radius:20px"></div>
+            <div class="skeleton" style="width:80px;height:28px;border-radius:20px"></div>
+            <div class="skeleton" style="width:70px;height:28px;border-radius:8px;margin-left:auto"></div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (errorMsg && !loading) {
+    <div class="server-error">
+      <div class="server-error__icon"><i class="bi bi-wifi-off"></i></div>
+      <div class="server-error__body">
+        <h4>Could not load orders</h4>
+        <p>Make sure JSON Server is running:</p>
+        <code>npm run server</code>
+      </div>
+    </div>
+  }
+
+  @if (!loading && orders.length === 0) {
+    <div class="empty-state">
+      <i class="bi bi-receipt-cutoff"></i>
+      <h5>No orders yet</h5>
+      <p>You haven't placed any orders. Start shopping!</p>
+      <a routerLink="/products" class="btn btn-primary mt-2 px-4">
+        <i class="bi bi-grid-3x3-gap me-2"></i>Browse Products
+      </a>
+    </div>
+  }
+
+  @for (order of orders; track order.id) {
+    <div class="order-card animate__animated animate__fadeIn">
+
+      <!-- ── Card Header ──────────────────────────────────────── -->
+      <div class="order-card__head">
+
+        <!-- Left: order info -->
+        <div class="order-card__meta">
+          <div class="order-card__id">Order #{{ order.id }}</div>
+          <div class="order-card__date">
+            <i class="bi bi-calendar3"></i> {{ order.date }}
+          </div>
+          <div class="order-card__items-count">
+            <i class="bi bi-box-seam"></i>
+            {{ getTotalItems(order) }} item(s) · {{ order.items.length }} product(s)
+          </div>
+        </div>
+
+        <!-- Center: status badge -->
+        <div class="order-card__status">
+          <span class="status-badge {{ getStatus(order.status).cls }}">
+            <i class="bi {{ getStatus(order.status).icon }}"></i>
+            {{ getStatus(order.status).label }}
+          </span>
+        </div>
+
+        <!-- Right: total + expand -->
+        <div class="order-card__right">
+          <div class="order-card__total">
+            <div class="order-card__total-label">Total</div>
+            <div class="order-card__total-value">
+              {{ order.total | number }} <small>EGP</small>
+            </div>
+          </div>
+          <button class="expand-btn" (click)="toggleExpand(order.id)"
+                  [class.expand-btn--open]="isExpanded(order.id)">
+            <i class="bi bi-chevron-down"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <div class="order-items" [class.order-items--open]="isExpanded(order.id)">
+        <div class="order-items__inner">
+
+          <div class="order-items__header">
+            <span>Product</span>
+            <span>Qty</span>
+            <span>Unit Price</span>
+            <span>Subtotal</span>
+          </div>
+
+          @for (item of order.items; track item.productId) {
+            <div class="order-item-row">
+              <div class="order-item-row__name">
+                <i class="bi bi-dot" style="color:var(--sz-primary);font-size:1.4rem"></i>
+                {{ item.name }}
+              </div>
+              <div class="order-item-row__qty">× {{ item.quantity }}</div>
+              <div class="order-item-row__price">{{ item.price | number }} EGP</div>
+              <div class="order-item-row__subtotal">
+                {{ item.price * item.quantity | number }} EGP
+              </div>
+            </div>
+          }
+
+          <!-- Items total -->
+          <div class="order-items__footer">
+            <span>Order Total</span>
+            <span class="order-items__footer-total">{{ order.total | number }} EGP</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>

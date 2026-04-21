@@ -1,0 +1,181 @@
+<div class="page-wrapper fade-in">
+
+  <div class="cart-header">
+    <h1 class="page-title mb-0">
+      <i class="bi bi-cart3"></i> My <span>Cart</span>
+    </h1>
+    @if (cartItems.length > 0) {
+      <span class="cart-header__count">{{ itemCount }} item(s)</span>
+    }
+  </div>
+
+  @if (loading) {
+    <div class="cart-skeleton">
+      @for (i of [1,2,3]; track i) {
+        <div class="cart-skeleton__row">
+          <div class="skeleton" style="width:200px;height:20px;border-radius:6px"></div>
+          <div class="skeleton" style="width:80px;height:20px;border-radius:6px"></div>
+          <div class="skeleton" style="width:120px;height:36px;border-radius:10px"></div>
+          <div class="skeleton" style="width:90px;height:20px;border-radius:6px"></div>
+          <div class="skeleton" style="width:36px;height:36px;border-radius:8px"></div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (errorMsg && !loading) {
+    <div class="server-error">
+      <div class="server-error__icon"><i class="bi bi-wifi-off"></i></div>
+      <div class="server-error__body">
+        <h4>Could not load cart</h4>
+        <p>Make sure JSON Server is running:</p>
+        <code>npm run server</code>
+      </div>
+    </div>
+  }
+
+  @if (orderPlaced) {
+    <div class="order-success animate__animated animate__fadeInUp">
+      <div class="order-success__icon">
+        <i class="bi bi-bag-check-fill"></i>
+      </div>
+      <h2>Order Placed Successfully! 🎉</h2>
+      <p>Thank you for shopping with ShopZone.<br>Your order is now being processed.</p>
+      <div class="order-success__actions">
+        <a routerLink="/orders" class="oa-btn oa-btn--primary">
+          <i class="bi bi-receipt-cutoff"></i> View My Orders
+        </a>
+        <a routerLink="/products" class="oa-btn oa-btn--outline">
+          <i class="bi bi-grid-3x3-gap"></i> Continue Shopping
+        </a>
+      </div>
+    </div>
+  }
+
+  @if (!loading && !orderPlaced && cartItems.length === 0) {
+    <div class="empty-state">
+      <i class="bi bi-cart-x"></i>
+      <h5>Your cart is empty</h5>
+      <p>Browse our products and add something you like!</p>
+      <a routerLink="/products" class="btn btn-primary mt-2 px-4">
+        <i class="bi bi-grid-3x3-gap me-2"></i>Browse Products
+      </a>
+    </div>
+  }
+
+  @if (!loading && !orderPlaced && cartItems.length > 0) {
+    <div class="cart-layout">
+
+      <div class="cart-items">
+        <div class="cart-items__header">
+          <span>Product</span>
+          <span>Price</span>
+          <span>Quantity</span>
+          <span>Subtotal</span>
+          <span></span>
+        </div>
+
+        @for (item of cartItems; track item.id) {
+          <div class="cart-row" [class.cart-row--removing]="removingId === item.id">
+
+            <div class="cart-row__name">
+              <div class="cart-row__dot"></div>
+              <span>{{ item.name }}</span>
+            </div>
+
+            <div class="cart-row__price">
+              {{ item.price | number }} <small>EGP</small>
+            </div>
+
+            <div class="cart-row__qty">
+              <div class="qty-stepper">
+                <button class="qty-btn" (click)="decrement(item)"
+                        [disabled]="item.quantity <= 1 || removingId === item.id">
+                  <i class="bi bi-dash"></i>
+                </button>
+                <input
+                  type="number"
+                  class="qty-input"
+                  [(ngModel)]="item.quantity"
+                  (ngModelChange)="onQtyInput(item)"
+                  [min]="1"
+                  [disabled]="removingId === item.id">
+                <button class="qty-btn" (click)="increment(item)"
+                        [disabled]="removingId === item.id">
+                  <i class="bi bi-plus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="cart-row__subtotal">
+              {{ item.price * item.quantity | number }} <small>EGP</small>
+            </div>
+
+            <div class="cart-row__remove">
+              <button class="remove-btn"
+                      [class.remove-btn--loading]="removingId === item.id"
+                      [disabled]="!!removingId"
+                      (click)="removeItem(item)">
+                @if (removingId === item.id) {
+                  <span class="btn-spinner"></span>
+                } @else {
+                  <i class="bi bi-trash3"></i>
+                }
+              </button>
+            </div>
+
+          </div>
+        }
+      </div>
+
+      <div class="order-summary">
+        <h3 class="order-summary__title">
+          <i class="bi bi-receipt"></i> Order Summary
+        </h3>
+
+        <div class="summary-rows">
+          <div class="summary-row">
+            <span>Items ({{ cartItems.length }} products)</span>
+            <span>{{ subtotal | number }} EGP</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span class="summary-row__free">
+              <i class="bi bi-truck"></i> Free
+            </span>
+          </div>
+          <div class="summary-row">
+            <span>Tax</span>
+            <span class="text-muted">Included</span>
+          </div>
+        </div>
+
+        <div class="summary-total">
+          <span>Total</span>
+          <span>{{ subtotal | number }} <small>EGP</small></span>
+        </div>
+
+        <button
+          class="place-order-btn"
+          [class.place-order-btn--loading]="placingOrder"
+          [disabled]="placingOrder || cartItems.length === 0"
+          (click)="placeOrder()">
+          @if (placingOrder) {
+            <span class="btn-spinner"></span>
+            <span>Placing order…</span>
+          } @else {
+            <i class="bi bi-bag-check-fill"></i>
+            <span>Place Order</span>
+          }
+        </button>
+
+        <a routerLink="/products" class="continue-shopping">
+          <i class="bi bi-arrow-left"></i> Continue Shopping
+        </a>
+
+      </div>
+
+    </div>
+  }
+
+</div>

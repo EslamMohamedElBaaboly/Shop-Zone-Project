@@ -1,0 +1,131 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "eslam Mohamed",
+      "email": "eslam@shopzone.com",
+      "password": "12345678",
+      "role": "user"
+    },
+    {
+      "id": 2,
+      "name": "Sara Ali",
+      "email": "sara@shopzone.com",
+      "password": "abcdefgh",
+      "role": "admin"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "iPhone 15 Pro",
+      "price": 45000,
+      "category": "Electronics",
+      "stock": 10,
+      "rating": 4.8,
+      "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-15-pro-1.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Samsung 4K TV",
+      "price": 18000,
+      "category": "Electronics",
+      "stock": 5,
+      "rating": 4.5,
+      "image": "https://images.unsplash.com/photo-1593305841991-05c297ba4575?q=80&w=400"
+    },
+    {
+      "id": 3,
+      "name": "Nike Running Shoes",
+      "price": 2500,
+      "category": "Sports",
+      "stock": 20,
+      "rating": 4.3,
+      "image": "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600"
+    },
+    {
+      "id": 4,
+      "name": "Adidas Tracksuit",
+      "price": 1800,
+      "category": "Sports",
+      "stock": 15,
+      "rating": 4.1,
+      "image": "https://images.pexels.com/photos/6311392/pexels-photo-6311392.jpeg?auto=compress&cs=tinysrgb&w=600"
+    },
+    {
+      "id": 5,
+      "name": "Cotton Shirt",
+      "price": 350,
+      "category": "Fashion",
+      "stock": 0,
+      "rating": 3.9,
+      "image": "https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=600"
+    },
+    {
+      "id": 6,
+      "name": "Leather Sofa",
+      "price": 12000,
+      "category": "Home",
+      "stock": 3,
+      "rating": 4.6,
+      "image": "https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg?auto=compress&cs=tinysrgb&w=600"
+    },
+    {
+      "id": 7,
+      "name": "Coffee Table",
+      "price": 3500,
+      "category": "Home",
+      "stock": 8,
+      "rating": 4.2,
+      "image": "https://images.pexels.com/photos/276528/pexels-photo-276528.jpeg?auto=compress&cs=tinysrgb&w=600"
+    },
+    {
+      "id": 8,
+      "name": "Wireless Headphones",
+      "price": 5500,
+      "category": "Electronics",
+      "stock": 12,
+      "rating": 4.7,
+      "image": "https://images.pexels.com/photos/3394665/pexels-photo-3394665.jpeg?auto=compress&cs=tinysrgb&w=600"
+    }
+  ],
+  "cart": [],
+  "orders": [
+    {
+      "userId": 1,
+      "total": 14000,
+      "status": "pending",
+      "date": "2026-04-21",
+      "items": [
+        {
+          "productId": 7,
+          "name": "Coffee Table",
+          "quantity": 4,
+          "price": 3500
+        }
+      ],
+      "id": 1
+    },
+    {
+      "userId": 1,
+      "total": 50500,
+      "status": "pending",
+      "date": "2026-04-21",
+      "items": [
+        {
+          "productId": 1,
+          "name": "iPhone 15 Pro",
+          "quantity": 1,
+          "price": 45000
+        },
+        {
+          "productId": 8,
+          "name": "Wireless Headphones",
+          "quantity": 1,
+          "price": 5500
+        }
+      ],
+      "id": 2
+    }
+  ]
+}

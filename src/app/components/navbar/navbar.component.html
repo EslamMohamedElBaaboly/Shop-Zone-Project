@@ -1,0 +1,131 @@
+<nav class="sz-navbar">
+  <div class="nav-container">
+
+    <!-- Brand -->
+    <a class="nav-brand" routerLink="/products" (click)="closeMobileMenu()">
+      <div class="brand-mark">
+        <i class="bi bi-bag"></i>
+      </div>
+      <span class="brand-text">Shop<span class="brand-accent">Zone</span></span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <div class="nav-desktop">
+
+      @if (!isLoggedIn) {
+        <div class="nav-links">
+          <a class="nav-link" routerLink="/login" routerLinkActive="nav-link--active">
+            <i class="bi bi-box-arrow-in-right"></i><span>Login</span>
+          </a>
+          <a class="nav-btn" routerLink="/register">
+            <i class="bi bi-person-plus"></i><span>Register</span>
+          </a>
+        </div>
+      }
+
+      @if (isLoggedIn) {
+        <div class="nav-links">
+          <a class="nav-link" routerLink="/products" routerLinkActive="nav-link--active">
+            <i class="bi bi-grid"></i><span>Products</span>
+          </a>
+          <a class="nav-link nav-link--cart" routerLink="/cart" routerLinkActive="nav-link--active">
+            <div class="cart-icon-wrap">
+              <i class="bi bi-bag"></i>
+              @if (cartCount > 0) {
+                <span class="cart-badge">{{ cartCount > 99 ? '99+' : cartCount }}</span>
+              }
+            </div>
+            <span>Cart</span>
+          </a>
+          <a class="nav-link" routerLink="/orders" routerLinkActive="nav-link--active">
+            <i class="bi bi-receipt"></i><span>Orders</span>
+          </a>
+          <a class="nav-link" routerLink="/profile" routerLinkActive="nav-link--active">
+            <i class="bi bi-person"></i><span>Profile</span>
+          </a>
+        </div>
+
+        <div class="nav-user">
+          <div class="user-chip">
+            <div class="user-avatar">{{ firstName.charAt(0) }}</div>
+            <span class="user-name">{{ firstName }}</span>
+          </div>
+          <button class="logout-btn" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+          </button>
+        </div>
+      }
+
+    </div>
+
+    <!-- Mobile Right -->
+    <div class="nav-mobile-right">
+      @if (isLoggedIn) {
+        <a routerLink="/cart" class="mobile-cart-btn" (click)="closeMobileMenu()">
+          <i class="bi bi-bag"></i>
+          @if (cartCount > 0) {
+            <span class="cart-badge">{{ cartCount }}</span>
+          }
+        </a>
+      }
+      <button class="hamburger" (click)="toggleMobileMenu()"
+              [class.hamburger--open]="isMobileMenuOpen" aria-label="Menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.mobile-menu--open]="isMobileMenuOpen">
+    <div class="mobile-menu-inner">
+
+      @if (!isLoggedIn) {
+        <a class="mobile-link" routerLink="/login" routerLinkActive="mobile-link--active" (click)="closeMobileMenu()">
+          <i class="bi bi-box-arrow-in-right"></i> Login
+        </a>
+        <a class="mobile-link mobile-link--primary" routerLink="/register" (click)="closeMobileMenu()">
+          <i class="bi bi-person-plus"></i> Register
+        </a>
+      }
+
+      @if (isLoggedIn) {
+        <div class="mobile-user-info">
+          <div class="user-avatar user-avatar--lg">{{ firstName.charAt(0) }}</div>
+          <div>
+            <div class="fw-700" style="color:var(--sz-ink);font-size:.9rem">{{ currentUser?.name }}</div>
+            <div style="font-size:.75rem;color:var(--sz-muted);letter-spacing:.02em">{{ currentUser?.email }}</div>
+          </div>
+        </div>
+        <div class="mobile-divider"></div>
+        <a class="mobile-link" routerLink="/products" routerLinkActive="mobile-link--active" (click)="closeMobileMenu()">
+          <i class="bi bi-grid"></i> Products
+        </a>
+        <a class="mobile-link" routerLink="/cart" routerLinkActive="mobile-link--active" (click)="closeMobileMenu()">
+          <i class="bi bi-bag"></i> Cart
+          @if (cartCount > 0) {
+            <span class="ms-auto cart-badge" style="position:static;border:none;font-size:.7rem">{{ cartCount }}</span>
+          }
+        </a>
+        <a class="mobile-link" routerLink="/orders" routerLinkActive="mobile-link--active" (click)="closeMobileMenu()">
+          <i class="bi bi-receipt"></i> Orders
+        </a>
+        <a class="mobile-link" routerLink="/profile" routerLinkActive="mobile-link--active" (click)="closeMobileMenu()">
+          <i class="bi bi-person"></i> Profile
+        </a>
+        <div class="mobile-divider"></div>
+        <button class="mobile-link mobile-link--danger" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      }
+
+    </div>
+  </div>
+
+  @if (isMobileMenuOpen) {
+    <div class="mobile-backdrop" (click)="closeMobileMenu()"></div>
+  }
+
+</nav>

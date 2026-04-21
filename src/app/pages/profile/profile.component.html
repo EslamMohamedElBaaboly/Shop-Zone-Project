@@ -1,0 +1,154 @@
+<div class="page-wrapper fade-in">
+
+  @if (currentUser) {
+
+    
+    <div class="profile-hero">
+      <div class="profile-hero__avatar">{{ avatarLetter }}</div>
+      <div class="profile-hero__info">
+        <h1 class="profile-hero__name">{{ currentUser.name }}</h1>
+        <p class="profile-hero__email">
+          <i class="bi bi-envelope-fill"></i> {{ currentUser.email }}
+        </p>
+        <span class="profile-hero__role"
+              [class.profile-hero__role--admin]="currentUser.role === 'admin'">
+          <i class="bi"
+             [class.bi-shield-fill-check]="currentUser.role === 'admin'"
+             [class.bi-person-fill-check]="currentUser.role === 'user'"></i>
+          {{ currentUser.role | titlecase }}
+        </span>
+      </div>
+      <button class="profile-hero__logout" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STATS ROW
+    ══════════════════════════════════════ -->
+    <div class="profile-stats">
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--blue">
+          <i class="bi bi-person-badge"></i>
+        </div>
+        <div class="stat-card__body">
+          <div class="stat-card__value">{{ userIdDisplay }}</div>
+          <div class="stat-card__label">User ID</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--purple">
+          <i class="bi bi-cart3"></i>
+        </div>
+        <div class="stat-card__body">
+          <div class="stat-card__value">{{ cartCount }}</div>
+          <div class="stat-card__label">Items in Cart</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--green">
+          <i class="bi bi-shield-lock"></i>
+        </div>
+        <div class="stat-card__body">
+          <div class="stat-card__value">Active</div>
+          <div class="stat-card__label">Account Status</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-details sz-card p-0 overflow-hidden mb-4">
+      <div class="profile-details__heading">
+        <i class="bi bi-person-lines-fill"></i> Account Details
+      </div>
+
+      <div class="detail-item">
+        <div class="detail-item__label">
+          <i class="bi bi-person"></i> Full Name
+        </div>
+        <div class="detail-item__value">{{ currentUser.name }}</div>
+      </div>
+
+      <div class="detail-item">
+        <div class="detail-item__label">
+          <i class="bi bi-envelope"></i> Email Address
+        </div>
+        <div class="detail-item__value">{{ currentUser.email }}</div>
+      </div>
+
+      <div class="detail-item">
+        <div class="detail-item__label">
+          <i class="bi bi-shield-lock"></i> Account Role
+        </div>
+        <div class="detail-item__value">
+          <span class="role-chip"
+                [class.role-chip--admin]="currentUser.role === 'admin'">
+            {{ currentUser.role | titlecase }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Interceptor evidence -->
+      <div class="detail-item detail-item--last">
+        <div class="detail-item__label">
+          <i class="bi bi-key-fill" style="color:var(--sz-accent)"></i>
+          User ID
+          <span class="interceptor-badge">set by interceptor</span>
+        </div>
+        <div class="detail-item__value">
+          <span class="userId-chip">{{ userIdDisplay }}</span>
+          <span class="userId-note">
+            Stored in localStorage as 'userId' · Used as Authorization: Bearer header
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         QUICK LINKS
+    ══════════════════════════════════════ -->
+    <div class="sz-card p-4">
+      <div class="quick-links__title">
+        <i class="bi bi-lightning-fill" style="color:var(--sz-accent)"></i>
+        Quick Links
+      </div>
+      <div class="quick-links__grid">
+        <a routerLink="/products" class="quick-link">
+          <div class="quick-link__icon quick-link__icon--blue">
+            <i class="bi bi-grid-3x3-gap-fill"></i>
+          </div>
+          <span>Products</span>
+          <i class="bi bi-chevron-right ms-auto text-muted"></i>
+        </a>
+        <a routerLink="/cart" class="quick-link">
+          <div class="quick-link__icon quick-link__icon--purple">
+            <i class="bi bi-cart3"></i>
+          </div>
+          <span>My Cart</span>
+          @if (cartCount > 0) {
+            <span class="quick-link__badge">{{ cartCount }}</span>
+          }
+          <i class="bi bi-chevron-right ms-auto text-muted"></i>
+        </a>
+        <a routerLink="/orders" class="quick-link">
+          <div class="quick-link__icon quick-link__icon--green">
+            <i class="bi bi-receipt-cutoff"></i>
+          </div>
+          <span>My Orders</span>
+          <i class="bi bi-chevron-right ms-auto text-muted"></i>
+        </a>
+      </div>
+    </div>
+
+  } @else {
+    <div class="empty-state">
+      <i class="bi bi-person-x"></i>
+      <h5>No user data found</h5>
+      <p>Please log in again to view your profile.</p>
+      <a routerLink="/login" class="btn btn-primary mt-2 px-4">Go to Login</a>
+    </div>
+  }
+
+</div>
