@@ -51,8 +51,8 @@ Resources
 
 | Email | Password | Role |
 |-------|----------|------|
-| ahmed@shopzone.com | 12345678 | user |
-| sara@shopzone.com  | abcdefgh | admin |
+| eslam@shopzone.com | 12345678 | admin |
+| sara@shopzone.com  | abcdefgh | user |
 
 ---
 
